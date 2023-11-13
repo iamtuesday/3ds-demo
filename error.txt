@@ -1,0 +1,49 @@
+ENDPOINT: https://api.micuentaweb.pe/api-payment/V4/PCI/Authentication/CreateSession
+
+METHOD: POST
+
+REQUEST: {
+  "amount": 2874,
+  "currency": "PEN",
+  "transactionCategory": "PAYMENT",
+  "productType": "GOODS_OR_SERVICE_PURCHASE",
+  "merchant": {
+    "mid": "84095673"
+  },
+  "paymentForm": {
+    "pan": "4111111111111111",
+    "expiryMonth": "05",
+    "expiryYear": "26",
+    "networkPreference": "MASTERCARD"
+  },
+  "protocolRequest": {
+    "name": "THREEDS",
+    "version": "2",
+    "challengePreference": "NO_PREFERENCE"
+  },
+  "ianTargetUrl": "https://f73e-190-232-164-100.ngrok.io/api/auth"
+}
+
+
+RESPONSE: {
+	"webService": "PCI/Authentication/CreateSession",
+	"version": "V4",
+	"applicationVersion": "6.9.0",
+	"serverDate": "2023-11-13T20:40:45+00:00",
+	"ticket": "3a2b390e1d6141d9882c70e7502655fe",
+	"applicationProvider": "MCW",
+	"metadata": null,
+	"status": "ERROR",
+	"mode": "TEST",
+	"serverUrl": "https://api.micuentaweb.pe",
+	"_type": "V4/WebService/Response",
+	"answer": {
+		"errorCode": "PSP_025",
+		"errorMessage": "MID not found",
+		"detailedErrorCode": "400",
+		"detailedErrorMessage": "Contract not found for (mid, tid) : 84095673, null",
+		"ticket": null,
+		"shopId": "84095673",
+		"_type": "V4/WebService/WebServiceError"
+	}
+}
