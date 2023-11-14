@@ -1,35 +1,39 @@
 "use client";
-import { useEffect, useRef, useState } from "react";
-import { apiConfig } from "../utils/config";
-import { KrAuthenticate } from "@/services/kr-authenticate";
-
-const data = {
-  "amount": 2874,
-  "currency": "PEN",
-  "transactionCategory": "PAYMENT",
-  "productType": "GOODS_OR_SERVICE_PURCHASE",
-  "merchant": {
-    "mid": "84095673"
-  },
-  "paymentForm": {
-    "pan": "4111111111111111",
-    "expiryMonth": "05",
-    "expiryYear": "26",
-    "networkPreference": "MASTERCARD"
-  },
-  "protocolRequest": {
-    "name": "THREEDS",
-    "version": "2",
-    "challengePreference": "NO_PREFERENCE"
-  },
-  "ianTargetUrl": "https://f73e-190-232-164-100.ngrok.io/api/auth"
+declare global {
+  interface Window {
+    KrAuthenticate: any;
+  }
 }
 
+import { useEffect, useRef, useState } from "react";
+import { apiConfig } from "../utils/config";
+import Script from "next/script";
+
+const data = {
+  amount: 2874,
+  currency: "PEN",
+  transactionCategory: "PAYMENT",
+  productType: "GOODS_OR_SERVICE_PURCHASE",
+  merchant: {
+    mid: "4075564",
+  },
+  paymentForm: {
+    pan: "4111111111111111",
+    expiryMonth: "05",
+    expiryYear: "26",
+    networkPreference: "MASTERCARD",
+  },
+  protocolRequest: {
+    name: "THREEDS",
+    version: "2",
+    challengePreference: "NO_PREFERENCE",
+  },
+  ianTargetUrl: "https://0f8e-170-82-98-224.ngrok-free.app/api/auth",
+};
 
 export const Component3DS = () => {
   const [operationSessionId, setOperationSessionId] = useState("");
   const [operationUrl, setOperationUrl] = useState("");
-  const krAuthenticateRef = useRef<KrAuthenticate | null>(null);
 
   const createSession = async () => {
     try {
@@ -68,49 +72,43 @@ export const Component3DS = () => {
     document.body.appendChild(overlay);
   };
 
-  const authenticateSession = () => {
-    /* document.querySelector("#submitButton")?.setAttribute("disabled", "true"); */
-    /* buildOverlay(); */
+  const authenticateSession = () => {};
 
-    if (krAuthenticateRef.current) {
-      try {
-        krAuthenticateRef.current.authenticate(operationUrl, () => {
-          /* document.getElementById("overlay")?.remove(); */
-        });
+  // const authenticateSession = () => {
+  //   /* document.querySelector("#submitButton")?.setAttribute("disabled", "true"); */
+  //   // buildOverlay();
 
-        /* document.querySelector("#submitButton")?.removeAttribute("disabled"); */
-      } catch (error) {
-        console.error("Authentication error", error);
-      }
-    }
-  };
+  //   if (krAuthenticateRef.current) {
+  //     try {
+  //       // krAuthenticateRef.current.authenticate(operationUrl, () => {
+  //       //   /* document.getElementById("overlay")?.remove(); */
+  //       // });
+
+  //       krAuthenticateRef.current.authenticate(operationUrl);
+
+  //       /* document.querySelector("#submitButton")?.removeAttribute("disabled"); */
+  //     } catch (error) {
+  //       console.error("Authentication error", error);
+  //     }
+  //   }
+  // };
 
   useEffect(() => {
-    const loadScript = (src: string) => {
-      return new Promise((resolve, reject) => {
-        const script = document.createElement("script");
-        script.src = src;
-        script.onload = resolve;
-        script.onerror = reject;
-        document.head.appendChild(script);
-      });
-    };
+    if (typeof window !== "undefined") {
+      console.log("window", window?.window);
 
-    loadScript(
-      "https://static.micuentaweb.pe/static/js/authenticate-client/V1.0/kr-authenticate.umd.js"
-    )
-      .then(() => {
-        krAuthenticateRef.current = new KrAuthenticate(
-          `${process.env.NEXT_PUBLIC_IZIPAY_USER}:${process.env.NEXT_PUBLIC_KR_PUBLIC_KEY}}`
-        );
-      })
-      .then(() => {
-        console.log("krAuthenticateRef.current", krAuthenticateRef.current);
-        console.log("Se cargo el script");
-      })
-      .catch((error) => {
-        console.error("Error al cargar el script", error);
-      });
+      window.onload = function () {
+        try {
+          const krAuthenticateInstance = new window.KrAuthenticate(
+            `${process.env.NEXT_PUBLIC_IZIPAY_USER}:${process.env.NEXT_PUBLIC_KR_PUBLIC_KEY}`
+          );
+          
+          console.log("krAuthenticateInstance", krAuthenticateInstance);
+        } catch (error) {
+          console.error("Error al crear la instancia de KrAuthenticate:", error);
+        }
+      };
+    }
   }, []);
 
   /**
@@ -125,15 +123,15 @@ export const Component3DS = () => {
     console.log("Get Result", res.data);
   };
 
-  /* useEffect(() => {
-    const krAuthenticateInstance = new KrAuthenticate(
-      "89289758:testpublickey_TxzPjl9xKlhM0a6tfSVNilcLTOUZ0ndsTogGTByPUATcE"
-    );
-    krAuthenticateRef.current = krAuthenticateInstance;
+  // useEffect(() => {
+  //   const krAuthenticateInstance = new KrAuthenticate(
+  //     `${process.env.NEXT_PUBLIC_IZIPAY_USER}:${process.env.NEXT_PUBLIC_KR_PUBLIC_KEY}`
+  //   );
+  //   krAuthenticateRef.current = krAuthenticateInstance;
 
-	console.log("krAuthenticateRef.current", krAuthenticateRef.current);
-  }, []);
- */
+  // console.log("krAuthenticateRef.current", krAuthenticateRef.current);
+  // }, []);
+
   return (
     <div>
       {/* <Script

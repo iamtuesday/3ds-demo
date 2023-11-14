@@ -1,3 +1,4 @@
+"use client";
 import { Component3DS } from '@/components'
 
 export default function Home() {
