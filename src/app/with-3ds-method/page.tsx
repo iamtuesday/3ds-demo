@@ -4,6 +4,7 @@ import {
   PaymentForm,
   CPISessionResponse,
   ResponseCode,
+  With3DSPaymentForm,
 } from "@/components/molecules";
 
 export default function Home() {
@@ -11,7 +12,7 @@ export default function Home() {
     <main className="container my-12">
       <div className="grid grid-cols-2 gap-8">
         <div>
-          {/* <With3DSPaymentForm /> */}
+          <With3DSPaymentForm />
         </div>
 
         <ResponseCode />
