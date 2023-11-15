@@ -11,7 +11,7 @@ export default function Home() {
     <main className="container my-12">
       <div className="grid grid-cols-2 gap-8">
         <div>
-          <PaymentForm />
+          {/* <With3DSPaymentForm /> */}
         </div>
 
         <ResponseCode />

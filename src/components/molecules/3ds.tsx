@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { apiConfig } from "../utils/config";
+import { apiConfig } from "../../utils/config";
 
 const data = {
   amount: 2874,
@@ -22,7 +22,7 @@ const data = {
     version: "2",
     challengePreference: "NO_PREFERENCE",
   },
-  ianTargetUrl: "https://8e76-190-232-164-100.ngrok.io/api/auth",
+  ianTargetUrl: " https://8757-170-82-98-224.ngrok-free.app/api/auth",
 };
 
 export const Component3DS = () => {
@@ -78,7 +78,9 @@ export const Component3DS = () => {
         // });
         console.log("krAuthenticateRef.current", krAuthenticateRef.current);
 
-        krAuthenticateRef.current.authenticate(operationUrl);
+        krAuthenticateRef.current.authenticate(operationUrl, (value: any) => {
+          console.log("value", value)
+        });
 
         /* document.querySelector("#submitButton")?.removeAttribute("disabled"); */
       } catch (error) {
@@ -86,8 +88,6 @@ export const Component3DS = () => {
       }
     }
   };
-
-
 
   const getSession = async () => {
     const res = await apiConfig.post("/PCI/Authentication/GetSession", {
@@ -97,16 +97,16 @@ export const Component3DS = () => {
     console.log("Get Result", res.data);
   };
 
-
   useEffect(() => {
     const script = document.createElement("script");
     script.src =
       "https://static.micuentaweb.pe/static/js/authenticate-client/V1.0/kr-authenticate.umd.js";
     script.async = true;
     script.onload = () => {
-      const krAuthInstance = new window.KrAuthenticate(
-        `${process.env.NEXT_PUBLIC_IZIPAY_USER}:${process.env.NEXT_PUBLIC_KR_PUBLIC_KEY}`
-      );
+      const publicKey = `${process.env.NEXT_PUBLIC_IZIPAY_USER}:${process.env.NEXT_PUBLIC_KR_PUBLIC_KEY}`;
+      console.log("publicKey", publicKey);
+
+      const krAuthInstance = new window.KrAuthenticate(publicKey);
 
       krAuthenticateRef.current = krAuthInstance;
       /* krAuthInstance?.authenticate(operationUrl, () => {
@@ -114,10 +114,11 @@ export const Component3DS = () => {
       });  */
     };
     document.head.appendChild(script);
-  }, [operationUrl]); 
+  }, [operationUrl]);
 
   return (
     <div>
+      <div className="my-6 text-center flex flex-col gap-4">
       <button
         className="bg-red-600 border border-gray rounded-lg p-2 text-white hover:bg-red-500"
         onClick={createSession}
@@ -133,15 +134,20 @@ export const Component3DS = () => {
           </div>
         )}
       </div>
+      </div>
 
-      <button
-        id="submitButton"
-        type="submit"
-        className="bg-blue-600 border border-gray rounded-lg p-2 text-white hover:bg-blue-500"
-        onClick={authenticateSession}
-      >
-        Authenticate
-      </button>
+      <div className="my-6 text-center flex flex-col gap-4">
+        <h2>Autenticar la sesión</h2>
+
+        <button
+          id="submitButton"
+          type="submit"
+          className="bg-blue-600 border border-gray rounded-lg p-2 text-white hover:bg-blue-500"
+          onClick={authenticateSession}
+        >
+          Authenticate
+        </button>
+      </div>
 
       <div className="my-6 text-center flex flex-col gap-4">
         <h2>Obtener el resultado de la autenticación</h2>
@@ -150,7 +156,7 @@ export const Component3DS = () => {
           className="bg-green-600 border border-gray rounded-lg p-2 text-white hover:bg-green-500"
           onClick={getSession}
         >
-          Get Result
+          Get Session
         </button>
       </div>
     </div>

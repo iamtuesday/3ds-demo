@@ -19,8 +19,12 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
+        {/* <nav className="flex items-center justify-between flex-wrap bg-primary-foreground p-6">
+          <div className="flex items-center flex-shrink-0 mr-6">
+            3DS2 - Autenticación frictionless, sin 3DS Method
+          </div>
+        </nav> */}
         {children}
-    {/*     <Script src="https://static.micuentaweb.pe/static/js/authenticate-client/V1.0/kr-authenticate.umd.js" /> */}
       </body>
     </html>
   );
