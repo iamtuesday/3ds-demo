@@ -1,13 +1,7 @@
 "use client";
-declare global {
-  interface Window {
-    KrAuthenticate: any;
-  }
-}
 
 import { useEffect, useRef, useState } from "react";
 import { apiConfig } from "../utils/config";
-import Script from "next/script";
 
 const data = {
   amount: 2874,
@@ -28,12 +22,13 @@ const data = {
     version: "2",
     challengePreference: "NO_PREFERENCE",
   },
-  ianTargetUrl: "https://0f8e-170-82-98-224.ngrok-free.app/api/auth",
+  ianTargetUrl: "https://8e76-190-232-164-100.ngrok.io/api/auth",
 };
 
 export const Component3DS = () => {
   const [operationSessionId, setOperationSessionId] = useState("");
   const [operationUrl, setOperationUrl] = useState("");
+  const krAuthenticateRef = useRef<any>(null);
 
   const createSession = async () => {
     try {
@@ -72,48 +67,27 @@ export const Component3DS = () => {
     document.body.appendChild(overlay);
   };
 
-  const authenticateSession = () => {};
+  const authenticateSession = () => {
+    /* document.querySelector("#submitButton")?.setAttribute("disabled", "true"); */
+    // buildOverlay();
 
-  // const authenticateSession = () => {
-  //   /* document.querySelector("#submitButton")?.setAttribute("disabled", "true"); */
-  //   // buildOverlay();
+    if (krAuthenticateRef.current) {
+      try {
+        // krAuthenticateRef.current.authenticate(operationUrl, () => {
+        //   /* document.getElementById("overlay")?.remove(); */
+        // });
+        console.log("krAuthenticateRef.current", krAuthenticateRef.current);
 
-  //   if (krAuthenticateRef.current) {
-  //     try {
-  //       // krAuthenticateRef.current.authenticate(operationUrl, () => {
-  //       //   /* document.getElementById("overlay")?.remove(); */
-  //       // });
+        krAuthenticateRef.current.authenticate(operationUrl);
 
-  //       krAuthenticateRef.current.authenticate(operationUrl);
-
-  //       /* document.querySelector("#submitButton")?.removeAttribute("disabled"); */
-  //     } catch (error) {
-  //       console.error("Authentication error", error);
-  //     }
-  //   }
-  // };
-
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      console.log("window", window?.window);
-
-      window.onload = function () {
-        try {
-          const krAuthenticateInstance = new window.KrAuthenticate(
-            `${process.env.NEXT_PUBLIC_IZIPAY_USER}:${process.env.NEXT_PUBLIC_KR_PUBLIC_KEY}`
-          );
-          
-          console.log("krAuthenticateInstance", krAuthenticateInstance);
-        } catch (error) {
-          console.error("Error al crear la instancia de KrAuthenticate:", error);
-        }
-      };
+        /* document.querySelector("#submitButton")?.removeAttribute("disabled"); */
+      } catch (error) {
+        console.error("Authentication error", error);
+      }
     }
-  }, []);
+  };
 
-  /**
-   * Get Result
-   */
+
 
   const getSession = async () => {
     const res = await apiConfig.post("/PCI/Authentication/GetSession", {
@@ -123,24 +97,27 @@ export const Component3DS = () => {
     console.log("Get Result", res.data);
   };
 
-  // useEffect(() => {
-  //   const krAuthenticateInstance = new KrAuthenticate(
-  //     `${process.env.NEXT_PUBLIC_IZIPAY_USER}:${process.env.NEXT_PUBLIC_KR_PUBLIC_KEY}`
-  //   );
-  //   krAuthenticateRef.current = krAuthenticateInstance;
 
-  // console.log("krAuthenticateRef.current", krAuthenticateRef.current);
-  // }, []);
+  useEffect(() => {
+    const script = document.createElement("script");
+    script.src =
+      "https://static.micuentaweb.pe/static/js/authenticate-client/V1.0/kr-authenticate.umd.js";
+    script.async = true;
+    script.onload = () => {
+      const krAuthInstance = new window.KrAuthenticate(
+        `${process.env.NEXT_PUBLIC_IZIPAY_USER}:${process.env.NEXT_PUBLIC_KR_PUBLIC_KEY}`
+      );
+
+      krAuthenticateRef.current = krAuthInstance;
+      /* krAuthInstance?.authenticate(operationUrl, () => {
+        console.log("Authentication completed");
+      });  */
+    };
+    document.head.appendChild(script);
+  }, [operationUrl]); 
 
   return (
     <div>
-      {/* <Script
-        src="https://static.micuentaweb.pe/static/js/authenticate-client/V1.0/kr-authenticate.umd.js" 
-        onLoad={() => {
-          console.log('Script has loaded')
-        }}
-      /> */}
-
       <button
         className="bg-red-600 border border-gray rounded-lg p-2 text-white hover:bg-red-500"
         onClick={createSession}

@@ -20,7 +20,7 @@ export default async function RootLayout({
     <html lang="en">
       <body className={inter.className}>
         {children}
-        <Script src="https://static.micuentaweb.pe/static/js/authenticate-client/V1.0/kr-authenticate.umd.js" />
+    {/*     <Script src="https://static.micuentaweb.pe/static/js/authenticate-client/V1.0/kr-authenticate.umd.js" /> */}
       </body>
     </html>
   );

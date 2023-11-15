@@ -2,8 +2,6 @@ import axios from 'axios'
 
 export const baseURL = 'http://localhost:3000/api-payment/V4'
 
-const token = 'ODkyODk3NTg6dGVzdHBhc3N3b3JkXzd2QXR2TjQ5RThBZDZlNmloTXFJT3ZPSEM2UVY1WUttSVhneGlzTW0wVjdFcQ=='
-
 const username = process.env.NEXT_PUBLIC_IZIPAY_USER
 const password = process.env.NEXT_PUBLIC_IZIPAY_PASSWORD
 
@@ -16,7 +14,6 @@ export const apiConfig = axios.create({
 	timeout: 30000,
 	headers: {
 		'Content-Type': 'application/json',
-		/* Authorization: `Basic ${token}` */
 		Authorization: auth
 	}
 })
